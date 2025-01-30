@@ -1,0 +1,213 @@
+from itertools import combinations
+import matplotlib.pyplot as plt
+import pandas as pd
+import matplotlib.patheffects as path_effects
+from matplotlib.widgets import RectangleSelector
+import numpy as np
+import random
+import string
+
+
+
+# ===================================== User Inputs ======================================
+inNumLabels = 30
+inNumVariables = 10
+inNumberPCs = 2
+inFigureTitle = 'PCA Analysis'
+
+
+
+# =================================== Define Function ====================================
+def PCA(labels, data, indices, numberOfPCs, title, figSize):
+    print('========================================== PCA '
+          '==========================================')
+    from sklearn.decomposition import PCA as pca
+
+    # Initalize lists to  of clustered labels
+    selectedLabels = []
+    selectedValues = []
+    rectangles = []
+
+
+    # Define componet labels
+    pcaHeaders = []
+    for componetNumber in range(1, numberOfPCs + 1):
+        pcaHeaders.append(f'PC{componetNumber}')
+    headerCombinations = list(combinations(pcaHeaders, 2))
+
+
+    # # Cluater the datapoints
+    # Step 1: Apply PCA on the standardized data
+    pca = pca(n_components=numberOfPCs)  # Adjust the number of components as needed
+    dataPCA = pca.fit_transform(data)
+    # loadings = pca.components_.T
+
+    # Step 2: Create a DataFrame for PCA results
+    dataPCA = pd.DataFrame(dataPCA, columns=pcaHeaders, index=indices)
+    print(f'PCA Data: # of componets = {numberOfPCs}\n'
+          f'{dataPCA}\n\n')
+
+    # Step 3: Print explained variance ratio
+    # Evaluate evariance captured by each component
+    varRatio = pca.explained_variance_ratio_ * 100
+    print(f'Explained Variance Ratio: '
+          f'{" ".join([f"{x:.3f}" for x in varRatio])} %\n\n')
+
+
+    # Plot the data
+    for componets in headerCombinations:
+        fig, ax = plt.subplots(figsize=figSize)
+
+        def selectDatapoints(eClick, eRelease):
+            # # Function to update selection with a rectangle
+
+            nonlocal ax, rectangles
+
+            # Define x, y coordinates
+            x1, y1 = eClick.xdata, eClick.ydata  # Start of the rectangle
+            x2, y2 = eRelease.xdata, eRelease.ydata  # End of the rectangle
+
+            # Collect selected datapoints
+            selection = []
+            selectedSubs = []
+            for index, (x, y) in enumerate \
+                    (zip(dataPCA.loc[:, 'PC1'], dataPCA.loc[:, 'PC2'])):
+                if min(x1, x2) <= x <= max(x1, x2) and min(y1, y2) <= y <= max(y1, y2):
+                    selection.append((x, y))
+                    selectedSubs.append(dataPCA.index[index])
+            if selection:
+                selectedValues.append(selection)
+                selectedLabels.append(selectedSubs)
+
+            # Draw the boxes
+            if selectedValues:
+                for index, box in enumerate(selectedValues):
+                    # Calculate the bounding box for the selected points
+                    padding = 0.1 # Adjust the bounding box by adding space
+                    xMinBox = min(x for x, y in box) - padding
+                    xMaxBox = max(x for x, y in box) + padding
+                    yMinBox = min(y for x, y in box) - padding
+                    yMaxBox = max(y for x, y in box) + padding
+
+                    # Draw a single rectangle around the bounding box
+                    boundingRect = plt.Rectangle((xMinBox, yMinBox),
+                                                 width=xMaxBox - xMinBox,
+                                                 height=yMaxBox - yMinBox,
+                                                 linewidth=2,
+                                                 edgecolor='black',
+                                                 facecolor='none')
+                    ax.add_patch(boundingRect)
+                    rectangles.append(boundingRect)
+
+                    # Add text only if there are multiple boxes
+                    if len(selectedValues) > 1:
+                        # Calculate the center of the rectangle for text positioning
+                        centerX = (xMinBox + xMaxBox) / 2
+                        centerY = (yMinBox + yMaxBox) / 2
+
+                        # Number the boxes
+                        text = ax.text(centerX, centerY, f'{index + 1}',
+                                       horizontalalignment='center',
+                                       verticalalignment='center',
+                                       fontsize=25,
+                                       color='#F79620',
+                                       fontweight='bold')
+                        text.set_path_effects(
+                            [path_effects.Stroke(linewidth=2, foreground='black'),
+                             path_effects.Normal()])
+            plt.draw()
+        plt.scatter(dataPCA[componets[0]], dataPCA[componets[1]],
+                    c='#CC5500', edgecolor='black')
+        plt.xlabel(f'Principal Component {componets[0][-1]}',
+                   fontsize=16)
+        plt.ylabel(f'Principal Component {componets[1][-1]}',
+                   fontsize=16)
+        plt.title(title, fontsize=18, fontweight='bold')
+
+
+        # Set tick parameters
+        ax.tick_params(axis='both', which='major', length=4,
+                       labelsize=13, width=1.5)
+
+        # Set the thickness of the figure border
+        for _, spine in ax.spines.items():
+            spine.set_visible(True)
+            spine.set_linewidth(1.5)
+
+
+        # Create a RectangleSelector
+        selector = RectangleSelector(ax,
+                                     selectDatapoints,
+                                     useblit=True,
+                                     minspanx=5,
+                                     minspany=5,
+                                     spancoords='pixels',
+                                     interactive=True)
+
+        # Change rubber band color
+        selector.set_props(facecolor='none', edgecolor='green', linewidth=3)
+
+        fig.canvas.mpl_connect('key_press_event', pressKey)
+        fig.tight_layout()
+        plt.show()
+
+
+        # Create list of collected label dictionaries
+        if selectedLabels:
+            collectedLabels = []
+            for index, labelSet in enumerate(selectedLabels):
+                print(f'label Set: {index + 1}')
+                iteration = 0
+                collectionSet = {}
+                for label in labelSet:
+                    collectionSet[label] = labels[label]
+
+                # Sort collected labels and add to the list
+                collectionSet = dict(sorted(collectionSet.items(),
+                                            key=lambda x: x[1], reverse=True))
+                collectedLabels.append(collectionSet)
+
+
+                # Print collected labels
+                for label, count in collectionSet.items():
+                    print(f'     {label}: {count:,}')
+                    iteration += 1
+                    if iteration >= 10:
+                        print('\n')
+                        break
+
+            return collectedLabels
+
+
+
+def makeList(numberOfElements):
+    labels = []
+    for index in range(numberOfElements):
+        label = ''
+        addLabel = False
+        while not addLabel:
+            for _ in range(3):
+                label += string.ascii_uppercase[random.randint(0, 25)]
+            if label not in labels:
+                labels.append(label)
+                addLabel = True
+    return labels
+
+
+
+def pressKey(event):
+    if event.key == 'escape':
+        plt.close()
+
+
+
+# ===================================== Create Data ======================================
+values = pd.DataFrame(np.random.rand(inNumLabels, inNumVariables),
+                      index=makeList(inNumLabels),
+                      columns=list(string.ascii_uppercase[0:inNumVariables]))
+
+
+
+# ==================================== Evaluate Data =====================================
+PCA(labels=values.index, data=values, indices=values.index,
+    numberOfPCs=inNumberPCs, title=inFigureTitle, figSize=(9, 8))

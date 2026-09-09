@@ -23,19 +23,23 @@ def delLine(num=1):
     print('\033[F\033[2K' * num, end='') # Move cursor up & delete
 
 
-def getValues(N=15, hard=False):
+def getValues(N=15, set, hard=False):
     a = np.arange(3, N+1)
-    b = np.arange(3, 14)
-    if hard:
+    if set == 'multiply':
+        b = np.arange(3, 16)
+        if hard:
         # Remove 5 & 10
         a = a[(a != 5) & (a != 10)]
         b = b[(b != 5) & (b != 10)]
+    elif set == 'divide':
+        b = [100, 50, 10]
+
     return a, len(str(a[-1])), b, len(str(b[-1]))
 
 
 def multiplication():
     print('Multiplication Tables:')
-    val, lenV, col, lenC = getValues(N=15, hard=hardMode)
+    val, lenV, col, lenC = getValues(N=15, set='multiply', hard=hardMode)
     for _ in range(len(val)-1):
         # Select value
         i = random.randint(1, len(val)-1)
@@ -60,26 +64,26 @@ def multiplication():
 
 def division():
     print('Division Tables:')
-    val, lenV, col, lenC = getValues(N=15, hard=hardMode)
-    for _ in range(len(val)-1):
+    divisor, lenD, numerator, lenN = getValues(N=15, hard=hardMode)
+    for _ in range(len(divisor)-1):
         # Select value
         i = random.randint(1, len(val)-1)
-        v = val[i]
-        val = np.delete(val, i)
-        spaceV = " " * (lenV - len(str(v)))
-        print(f'\nValue: {pink}{v}{rst}')
+        d = val[i]
+        val = np.delete(divisor, i)
+        spaceD = " " * (lenD - len(str(d)))
+        print(f'\nValue: {pink}{d}{rst}')
 
         # Test
-        for c in col:
-            value = c / v
-            spaceC = " " * (lenC - len(str(c)))
+        for n in numerator:
+            value = n / d
+            spaceN = " " * (lenN - len(str(n)))
             while True:
-                x = input(f'   {spaceC}{c} / {v}{spaceV} = ')
+                x = input(f'   {spaceN}{n} / {d}{spaceD} = ')
                 if float(x) == value:
                     break
                 else:
                     delLine()
-                    print(f'  {red}{spaceC}{c} / {v}{spaceV} = {x}{rst}')
+                    print(f'  {red}{spaceN}{n} / {d}{spaceD} = {x}{rst}')
     print('\nDone\n')
 
 

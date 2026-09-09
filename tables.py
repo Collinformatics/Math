@@ -24,10 +24,11 @@ def multiplication():
         spaceV = " " * (lenV - len(str(v)))
         print(f'\nValue: {v}')
         for c in col:
+            value = v * c
             spaceC = " " * (lenC - len(str(c)))
             while True:
                 x = float(input(f'  {spaceV}{v} x {spaceC}{c} = '))
-                if x == v*c:
+                if x == value:
                     break
     print('\nDone\n')
 

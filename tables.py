@@ -22,7 +22,7 @@ pink = '\033[35m'
 rst = '\033[0m'
 
 
-def delLine(nLines=1):
+def deleteLine(nLines=1):
     print('\033[F\033[2K' * nLines, end='') # Move cursor up & delete
 
 
@@ -57,11 +57,14 @@ def multiplication():
             spaceC = " " * (lenC - len(str(c)))
             while True:
                 x = input(f'  {spaceV}{v} x {spaceC}{c} = ')
-                if float(x) == value:
-                    break
+                if x:
+                    if float(x) == value:
+                        break
+                    else:
+                        deleteLine()
+                        print(f'  {red}{spaceV}{v} x {spaceC}{c} = {x}{rst}')
                 else:
-                    delLine()
-                    print(f'  {red}{spaceV}{v} x {spaceC}{c} = {x}{rst}')
+                    deleteLine()
     print('\nDone\n')
 
 
@@ -82,11 +85,14 @@ def division():
             spaceN = " " * (lenN - len(str(n)))
             while True:
                 x = input(f'   {spaceN}{n} / {d}{spaceD} = ')
-                if float(x) == value:
-                    break
+                if x:
+                    if float(x) == value:
+                        break
+                    else:
+                        deleteLine()
+                        print(f'  {red}{spaceN}{n} / {d}{spaceD} = {x}{rst}')
                 else:
-                    delLine()
-                    print(f'  {red}{spaceN}{n} / {d}{spaceD} = {x}{rst}')
+                    deleteLine()
     print('\nDone\n')
 
 
@@ -99,7 +105,7 @@ def question():
     if x in tables.keys():
         return tables[x]
     else:
-        delLine(4)
+        deleteLine()(4)
         return question()
 
 

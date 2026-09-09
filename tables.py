@@ -1,4 +1,3 @@
-import argparse
 import numpy as np
 import random
 
@@ -6,30 +5,41 @@ import random
     Master the mathematics fundamentals by practicing the multiplication & division tables
 """
 
+# Colors
+red = '\033[31m'
+rst = '\033[0m'
 
-parser = argparse.ArgumentParser()
-parser.add_argument('-m', '--multiply', action='store_false')
-args = parser.parse_args()
 
-mul = args.multiply
+def delLine(num=1):
+    print('\033[F\033[2K' * num, end='')
 
 
 def multiplication():
     print('Multiplication Tables:')
-    val = np.arange(3, 15)
+    N = 15
+    val = np.arange(3, N+1)
     col = np.arange(3, 14)
     lenV = len(str(val[-1]))
     lenC = len(str(col[-1]))
-    for v in val:
+    for _ in range(N):
+        # Select value
+        i = random.randint(1, len(val)-1)
+        v = val[i]
+        val = np.delete(val, i)
         spaceV = " " * (lenV - len(str(v)))
         print(f'\nValue: {v}')
+
+        # Test
         for c in col:
             value = v * c
             spaceC = " " * (lenC - len(str(c)))
             while True:
-                x = float(input(f'  {spaceV}{v} x {spaceC}{c} = '))
-                if x == value:
+                x = input(f'  {spaceV}{v} x {spaceC}{c} = ')
+                if float(x) == value:
                     break
+                else:
+                    delLine()
+                    print(f'  {red}{spaceV}{v} x {spaceC}{c} = {x}{rst}')
     print('\nDone\n')
 
 
@@ -42,7 +52,7 @@ def question():
     if x in tables.keys():
         return tables[x]
     else:
-        print('\033[F\033[2K' * 4, end='') # Move cursor up & delete
+        delLine(4) # Move cursor up & delete
         return question()
 
 

@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import readline
 
 """
     Master the mathematics fundamentals by practicing the multiplication & division tables

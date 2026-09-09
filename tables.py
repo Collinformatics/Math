@@ -5,7 +5,8 @@ import readline
 import sys
 
 """
-    Master the mathematics fundamentals by practicing the multiplication & division tables
+    Master fundamentals the of mathematics by practicing the 
+    multiplication & division tables
 """
 
 parser = argparse.ArgumentParser(description='Mathematics Tables')
@@ -64,7 +65,7 @@ def multiplication():
                         print(f'  {red}{spaceV}{v} x {spaceC}{c} = {x}{rst}')
                 else:
                     deleteLine()
-    print('\nDone\n')
+    print()
 
 
 def division():
@@ -100,7 +101,7 @@ def division():
                         print(f'  {red}{spaceN}{n} / {d}{spaceD} = {x}{rst}')
                 else:
                     deleteLine()
-    print('\nDone\n')
+    print()
 
 
 def question():

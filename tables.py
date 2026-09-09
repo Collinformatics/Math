@@ -35,9 +35,6 @@ def getValues(valueSet, maxValue=15, hard=False):
             # Remove 5 & 10
             a = a[(a != 5) & (a != 10)]
             b = b[(b != 5) & (b != 10)]
-    # elif valueSet == 'divide':
-        # factors = [2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15]
-        # b = [100, 75, 50, 10]
 
     return a, len(str(a[-1])), b, len(str(b[-1]))
 
@@ -79,6 +76,7 @@ def division():
         d = div[i]
         div = np.delete(div, i)
         spaceD = " " * (lenD - len(str(d)))
+        random.shuffle(num)
         factors = [d * n for n in num]
         lenN = len(str(factors[-1]))
         # if not any(n % d == 0 and n/d != 1.0  for n in num):

@@ -17,6 +17,10 @@ parser.add_argument('-m', '--maxvalue', type=int, default=15,
 args = parser.parse_args()
 randomize = args.randomize
 N = args.maxvalue
+if N <= 3:
+    print(f'Max Value (-m / --maxvalue) cannot be ≤ 3\n'
+          f'Resetting to 4')
+    N = 4
 
 # Colors
 red = '\033[31m'
@@ -28,7 +32,11 @@ def deleteLine(nLines=1):
     print('\033[F\033[2K' * nLines, end='') # Move cursor up & delete
 
 
-def getValues(valueSet, maxValue=15):
+def pBar(l=50):
+    print('*'*l)
+
+
+def getValues(maxValue=15):
     a = [v for v in range(3, maxValue+1, 1)]
     b = [v for v in range(3, 17, 1)]
 
@@ -37,7 +45,7 @@ def getValues(valueSet, maxValue=15):
 
 def multiplication(hard=False):
     print('Multiplication Tables:')
-    val, lenV, col, lenC = getValues(valueSet='multiply', maxValue=N)
+    val, lenV, col, lenC = getValues(maxValue=N)
     for _ in range(len(val)-1):
         # Select value
         i = random.randint(1, len(val)-1)
@@ -62,12 +70,12 @@ def multiplication(hard=False):
                         print(f'  {red}{spaceV}{v} x {spaceC}{c} = {x}{rst}')
                 else:
                     deleteLine()
-    print()
+    pBar()
 
 
 def division(hard=False):
     print('Division Tables:')
-    div, lenD, num, _ = getValues(valueSet='divide', maxValue=N, hard=randomize)
+    div, lenD, num, _ = getValues(maxValue=N)
     for _ in range(len(div)-1):
         # Select value
         i = random.randint(1, len(div)-1)
@@ -99,7 +107,7 @@ def division(hard=False):
                         print(f'  {red}{spaceN}{n} / {d}{spaceD} = {x}{rst}')
                 else:
                     deleteLine()
-    print()
+    pBar()
 
 
 def question():
@@ -109,7 +117,7 @@ def question():
         print(f'{k}: {v}')
     x = input('Enter value: ')
     if x in tables.keys() or x in tables.values():
-        print()
+        pBar()
         return tables[x]
     else:
         deleteLine(4)

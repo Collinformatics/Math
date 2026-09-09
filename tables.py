@@ -103,12 +103,12 @@ def division(hard=False):
 
 
 def question():
-    tables = {'0': 'multiply', '1': 'divide'}
-    print('Select exercise:\n'
-          '0: Multiplication\n'
-          '1: Division')
+    tables = {'1': 'multiply', '2': 'divide'}
+    print('Select Exercise:')
+    for k, v in tables.items():
+        print(f'{k}: {v}')
     x = input('Enter value: ')
-    if x in tables.keys():
+    if x in tables.keys() or x in tables.values():
         print()
         return tables[x]
     else:

@@ -7,12 +7,11 @@ import readline
     Master the mathematics fundamentals by practicing the multiplication & division tables
 """
 
-argparser = argparse.ArgumentParser(description='Mathematics Tables')
-argparser.add_argument('-d', '--difficult', action='store_true',
+parser = argparse.ArgumentParser(description='Mathematics Tables')
+parser.add_argument('-d', '--difficult', action='store_true',
                        help='Increase difficulty by skipping the 5s and 10s')
-args = argparser.parse_args()
-
-hardmode = args.difficult
+args = parser.parse_args()
+hardMode = args.difficult
 
 # Colors
 red = '\033[31m'
@@ -36,7 +35,7 @@ def getValues(N=15, hard=False):
 
 def multiplication():
     print('Multiplication Tables:')
-    val, lenV, col, lenC = getValues(N=15, hard=hardmode)
+    val, lenV, col, lenC = getValues(N=15, hard=hardMode)
     for _ in range(len(val)-1):
         # Select value
         i = random.randint(1, len(val)-1)
@@ -61,7 +60,7 @@ def multiplication():
 
 def division():
     print('Division Tables:')
-    val, lenV, col, lenC = getValues(N=15, hard=hardmode)
+    val, lenV, col, lenC = getValues(N=15, hard=hardMode)
     for _ in range(len(val)-1):
         # Select value
         i = random.randint(1, len(val)-1)

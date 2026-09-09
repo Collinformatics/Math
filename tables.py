@@ -2,6 +2,7 @@ import argparse
 import numpy as np
 import random
 import readline
+import sys
 
 """
     Master the mathematics fundamentals by practicing the multiplication & division tables
@@ -27,15 +28,16 @@ def deleteLine(nLines=1):
 
 
 def getValues(valueSet, maxValue=15, hard=False):
-    a = np.arange(3, maxValue+1)
-    b = np.arange(3, 16)
+    a = [v for v in range(3, maxValue+1, 1)]
+    b = [v for v in range(3, 17, 1)]
     if valueSet == 'multiply':
         if hard:
             # Remove 5 & 10
             a = a[(a != 5) & (a != 10)]
             b = b[(b != 5) & (b != 10)]
-    elif valueSet == 'divide':
-        b = [100, 50, 10]
+    # elif valueSet == 'divide':
+        # factors = [2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15]
+        # b = [100, 75, 50, 10]
 
     return a, len(str(a[-1])), b, len(str(b[-1]))
 
@@ -70,23 +72,30 @@ def multiplication():
 
 def division():
     print('Division Tables:')
-    div, lenD, num, lenN = getValues(valueSet='divide', maxValue=N, hard=hardMode)
+    div, lenD, num, _ = getValues(valueSet='divide', maxValue=N, hard=hardMode)
     for _ in range(len(div)-1):
         # Select value
         i = random.randint(1, len(div)-1)
         d = div[i]
         div = np.delete(div, i)
         spaceD = " " * (lenD - len(str(d)))
+        factors = [d * n for n in num]
+        lenN = len(str(factors[-1]))
+        # if not any(n % d == 0 and n/d != 1.0  for n in num):
+        #     continue
         print(f'\nValue: {pink}{d}{rst}')
 
         # Test
-        for n in num:
+        for n in factors:
             value = n / d
+            if value == 1.0 or int(value) != value:
+                # print(f'* {d}, {n}, {value}')
+                continue
             spaceN = " " * (lenN - len(str(n)))
             while True:
-                x = input(f'   {spaceN}{n} / {d}{spaceD} = ')
+                x = input(f'  {spaceN}{n} / {d}{spaceD} = ')
                 if x:
-                    if float(x) == value:
+                    if float(x) == round(value, 2):
                         break
                     else:
                         deleteLine()
@@ -111,8 +120,8 @@ def question():
 
 if __name__ == '__main__':
     for _ in range(100):
-        # exercise = question()
-        exercise = 'multiply'
+        # exercise = 'multiply'
+        exercise = question()
         if exercise == 'multiply':
             multiplication()
         elif exercise == 'divide':

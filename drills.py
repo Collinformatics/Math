@@ -60,13 +60,14 @@ def getValues(problemSet, maxValue=15):
 def multiplication(shuffle=False):
     print('Multiplication Tables:')
     val, lenV, num, lenN = getValues(problemSet='multiplication', maxValue=N)
-    for _ in range(len(val)-1):
+    nRounds = len(val) - 1
+    for r in range(1, nRounds+1):
         # Select value
         i = random.randint(1, len(val)-1)
         v = val[i]
         val = np.delete(val, i)
         spaceV = " " * (lenV - len(str(v)))
-        print(f'\nValue: {pink}{v}{rst}')
+        print(f'\nValue: {pink}{v}{rst} ({r}/{nRounds})')
 
         # Test
         if shuffle:
@@ -90,13 +91,14 @@ def multiplication(shuffle=False):
 def division(shuffle=False):
     printBar(msg='Division Tables:')
     div, lenD, num, _ = getValues(problemSet='division', maxValue=N)
-    for _ in range(len(div)-1):
+    nRounds = len(div) - 1
+    for r in range(1, nRounds+1):
         # Select value
         i = random.randint(1, len(div)-1)
         d = div[i]
         div = np.delete(div, i)
         spaceD = " " * (lenD - len(str(d)))
-        print(f'\nValue: {pink}{d}{rst}')
+        print(f'\nValue: {pink}{d}{rst} ({r}/{nRounds})')
 
         # Determine values
         if shuffle:
@@ -127,12 +129,13 @@ def division(shuffle=False):
 def percentages(shuffle=False):
     printBar(msg='Percentages:')
     val, _, per, _ = getValues(problemSet='percentages', maxValue=1000)
-    for _ in range(len(val)-1):
+    nRounds = len(val) - 1
+    for r in range(nRounds):
         # Select value
         i = random.randint(1, len(val)-1)
         v = val[i]
         val = np.delete(val, i)
-        print(f'\nValue: {pink}{v}{rst}')
+        print(f'\nValue: {pink}{v}{rst} ({r}/{nRounds})')
 
         # Determine values
         percents = [p for p in per if (v * p) % 1 == 0]
@@ -159,6 +162,7 @@ def percentages(shuffle=False):
 def fractions(shuffle=False):
     printBar(msg='Fractions:')
     val, lenV, div, lenD = getValues(problemSet='fractions', maxValue=10)
+    nRounds = len(val) - 1
 
 
 def question():

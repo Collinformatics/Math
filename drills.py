@@ -47,14 +47,17 @@ def getValues(problemSet, maxValue=15):
     if problemSet == 'multiplication' or problemSet == 'division':
         a = [v for v in range(3, maxValue+1, 1) if v not in [10]]
         b = [v for v in range(3, 17, 1)]
-    elif problemSet == 'percentage':
+    elif problemSet == 'percentages':
         a = [v for v in range(100, maxValue, 50)]
         b = [v / 100 for v in range(10, 100, 10)]
+    elif problemSet == 'fractions':
+        a = [v for v in range(1, maxValue, 1)]
+        b = [v / 100 for v in range(1, maxValue, 1)]
     # print(f'a: {a}\nb: {b}')
     return a, len(str(a[-1])), b, len(str(b[-1]))
 
 
-def multiplication(hard=False):
+def multiplication(shuffle=False):
     print('Multiplication Tables:')
     val, lenV, num, lenN = getValues(problemSet='multiplication', maxValue=N)
     for _ in range(len(val)-1):
@@ -66,7 +69,7 @@ def multiplication(hard=False):
         print(f'\nValue: {pink}{v}{rst}')
 
         # Test
-        if hard:
+        if shuffle:
             random.shuffle(num)
         for n in num:
             value = v * n
@@ -84,7 +87,7 @@ def multiplication(hard=False):
     printBar()
 
 
-def division(hard=False):
+def division(shuffle=False):
     printBar(msg='Division Tables:')
     div, lenD, num, _ = getValues(problemSet='division', maxValue=N)
     for _ in range(len(div)-1):
@@ -96,7 +99,7 @@ def division(hard=False):
         print(f'\nValue: {pink}{d}{rst}')
 
         # Determine values
-        if hard:
+        if shuffle:
             random.shuffle(num)
         values = [d * n for n in num]
         lenN = len(str(values[-1]))
@@ -121,28 +124,26 @@ def division(hard=False):
     printBar()
 
 
-def percentages(hard=False):
+def percentages(shuffle=False):
     printBar(msg='Percentages:')
-    val, lenV, per, lenP = getValues(problemSet='percentages', maxValue=800)
+    val, _, per, _ = getValues(problemSet='percentages', maxValue=1000)
     for _ in range(len(val)-1):
         # Select value
         i = random.randint(1, len(val)-1)
         v = val[i]
         val = np.delete(val, i)
-        spaceV = " " * (lenV - len(str(v)))
         print(f'\nValue: {pink}{v}{rst}')
 
         # Determine values
         percents = [p for p in per if (v * p) % 1 == 0]
         # print(f'Per: {pink}{percents}{rst}')
-        if hard:
+        if shuffle:
             random.shuffle(percents)
 
         # Test
         for p in percents:
             pInt = int(p*100)
             value = v * p
-            spaceP = " "
             while True:
                 x = input(f'  {pInt}% of {v} = ')
                 if x:
@@ -155,9 +156,9 @@ def percentages(hard=False):
                     deleteLine()
 
 
-def fractions(hard=False):
+def fractions(shuffle=False):
     printBar(msg='Fractions:')
-    val, lenV, div, lenD = getValues(problemSet='fractions', maxValue=N)
+    val, lenV, div, lenD = getValues(problemSet='fractions', maxValue=10)
 
 
 def question():

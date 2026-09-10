@@ -32,8 +32,10 @@ def deleteLine(nLines=1):
     print('\033[F\033[2K' * nLines, end='') # Move cursor up & delete
 
 
-def printBar(l=50):
+def printBar(l=50, msg=''):
     print('*'*l)
+    if msg:
+        print(msg)
     
 
 def printError(msg):
@@ -83,7 +85,7 @@ def multiplication(hard=False):
 
 
 def division(hard=False):
-    print('Division Tables:')
+    printBar(msg='Division Tables:')
     div, lenD, num, _ = getValues(problemSet='division', maxValue=N)
     for _ in range(len(div)-1):
         # Select value
@@ -119,8 +121,8 @@ def division(hard=False):
     printBar()
 
 
-def percentage(hard=False):
-    print('Percentage:')
+def percentages(hard=False):
+    printBar(msg='Percentages:')
     val, lenV, per, lenP = getValues(problemSet='percentage', maxValue=N)
     for _ in range(len(val)-1):
         # Select value
@@ -153,14 +155,19 @@ def percentage(hard=False):
                     deleteLine()
 
 
+def fractions(hard=False):
+    printBar(msg='Percentage:')
+    val, lenV, per, lenP = getValues(problemSet='percentage', maxValue=N)
+
+
 def question():
-    tables = {'1': 'multiply', '2': 'divide', '3': 'percentage'}
+    tables = {'1': 'multiply', '2': 'divide', '3': 'percentage',
+              '4': 'fractions', '5': 'quit'}
     print('Select Exercise:')
     for k, v in tables.items():
         print(f'{k}: {v}')
     x = input('Enter value: ')
     if x in tables.keys() or x in tables.values():
-        printBar()
         return tables[x]
     else:
         deleteLine(4)
@@ -168,7 +175,7 @@ def question():
 
 
 if __name__ == '__main__':
-    for _ in range(100):
+    while True:
         # exercise = 'multiply'
         exercise = question()
         if exercise == 'multiply':
@@ -176,4 +183,9 @@ if __name__ == '__main__':
         elif exercise == 'divide':
             division(randomize)
         elif exercise == 'percentage':
-            percentage(randomize)
+            percentages(randomize)
+        elif exercise == 'fractions':
+            fractions(randomize)
+        else:
+            break
+

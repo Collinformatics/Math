@@ -9,7 +9,7 @@ import sys
     multiplication & division tables, percentages, and fractions
 """
 
-parser = argparse.ArgumentParser(description='Mathematics Tables')
+parser = argparse.ArgumentParser(description='Mathematics Drills')
 parser.add_argument('-r', '--randomize', action='store_true',
                        help='Increase difficulty by randomizing the order of values')
 parser.add_argument('-m', '--maxvalue', type=int, default=15,
@@ -48,7 +48,7 @@ def getValues(problemSet, maxValue=15):
         a = [v for v in range(3, maxValue+1, 1) if v not in [10]]
         b = [v for v in range(3, 17, 1)]
     elif problemSet == 'percentage':
-        a = [v for v in range(100, 400, 50)]
+        a = [v for v in range(100, maxValue, 50)]
         b = [v / 100 for v in range(10, 100, 10)]
     # print(f'a: {a}\nb: {b}')
     return a, len(str(a[-1])), b, len(str(b[-1]))
@@ -123,7 +123,7 @@ def division(hard=False):
 
 def percentages(hard=False):
     printBar(msg='Percentages:')
-    val, lenV, per, lenP = getValues(problemSet='percentage', maxValue=N)
+    val, lenV, per, lenP = getValues(problemSet='percentages', maxValue=800)
     for _ in range(len(val)-1):
         # Select value
         i = random.randint(1, len(val)-1)
@@ -150,22 +150,22 @@ def percentages(hard=False):
                         break
                     else:
                         deleteLine()
-                        printError(f'  {pInt}% of {v} = {value}')
+                        printError(f'  {pInt}% of {v} = {x}')
                 else:
                     deleteLine()
 
 
 def fractions(hard=False):
-    printBar(msg='Percentage:')
-    val, lenV, per, lenP = getValues(problemSet='percentage', maxValue=N)
+    printBar(msg='Fractions:')
+    val, lenV, div, lenD = getValues(problemSet='fractions', maxValue=N)
 
 
 def question():
-    tables = {'1': 'multiply', '2': 'divide', '3': 'percentage',
-              '4': 'fractions', '5': 'quit'}
+    tables = {'1': 'Multiplication Tables', '2': 'Division Tables', '3': 'Percentages',
+              '4': 'Fractions', '5': 'Quit'}
     print('Select Exercise:')
     for k, v in tables.items():
-        print(f'{k}: {v}')
+        print(f'  {k}: {v}')
     x = input('Enter value: ')
     if x in tables.keys() or x in tables.values():
         return tables[x]
@@ -178,13 +178,13 @@ if __name__ == '__main__':
     while True:
         # exercise = 'multiply'
         exercise = question()
-        if exercise == 'multiply':
+        if exercise == 'Multiplication Tables':
             multiplication(randomize)
-        elif exercise == 'divide':
+        elif exercise == 'Division Tables':
             division(randomize)
-        elif exercise == 'percentage':
+        elif exercise == 'Percentages':
             percentages(randomize)
-        elif exercise == 'fractions':
+        elif exercise == 'Fractions':
             fractions(randomize)
         else:
             break

@@ -11,9 +11,9 @@ import sys
 
 parser = argparse.ArgumentParser(description='Mathematics Drills')
 parser.add_argument('-r', '--randomize', action='store_true',
-                       help='Increase difficulty by randomizing the order of values')
+                       help='Increased difficulty via order randomization')
 parser.add_argument('-m', '--maxvalue', type=int, default=15,
-                    help='Maximal value for the table')
+                    help='Max value for the operation tables')
 args = parser.parse_args()
 randomize = args.randomize
 N = args.maxvalue
@@ -32,7 +32,7 @@ def deleteLine(nLines=1):
     print('\033[F\033[2K' * nLines, end='') # Move cursor up & delete
 
 
-def printBar(l=50, msg=''):
+def printBar(msg='', l=50):
     print('*'*l)
     if msg:
         print(msg)
@@ -47,6 +47,20 @@ def getValues(problemSet, maxValue=15):
     if problemSet == 'multiplication' or problemSet == 'division':
         a = [v for v in range(3, maxValue+1, 1) if v not in [10]]
         b = [v for v in range(3, 17, 1)]
+    elif problemSet == 'double digets':
+        v1 = random.randint(1, 9) * 10
+        v2 = random.randint(1, 9)
+        a.append(v1 + v2)
+        b.append(v1 + v2)
+        for _ in range (2):
+            v2 = random.randint(1, 9)
+            b.append(v1 + v2)
+        for _ in range (2):
+            v1 = random.randint(1, 9) * 10
+            v2 = random.randint(1, 9)
+            a.append(v1 + v2)
+            b.append(v1 + v2)
+        random.shuffle(b)
     elif problemSet == 'percentages':
         a = [v for v in range(100, maxValue, 50)]
         b = [v / 100 for v in range(10, 100, 10)]
@@ -83,6 +97,38 @@ def multiplication(shuffle=False):
                     else:
                         deleteLine()
                         printError(f'  {spaceV}{v} x {spaceN}{n} = {x}')
+                else:
+                    deleteLine()
+    printBar()
+
+
+def multiplicationDoubleDiget(shuffle=False):
+    printBar(msg='Double Diget Multiplication:')
+    valA, lenA, valB, lenB = getValues(problemSet='double digets', maxValue=N)
+    nRounds = len(valA) - 1
+    for r in range(1, nRounds+1):
+        # Select value
+        i = random.randint(1, len(valA)-1)
+        vA = valA[i]
+        valA = np.delete(valA, i)
+        spaceA = " " * (lenA - len(str(vA)))
+        print(f'\nValue: {pink}{vA}{rst} ({r}/{nRounds})')
+
+        # Test
+        for vB in valB:
+            value = vA * vB
+            if value == 1.0 or int(value) != value:
+                # print(f'* {d}, {n}, {value}')
+                continue
+            spaceB = " " * (lenA - len(str(vB)))
+            while True:
+                x = input(f'  {spaceA}{vA} * {vB}{spaceB} = ')
+                if x:
+                    if float(x) == round(value, 2):
+                        break
+                    else:
+                        deleteLine()
+                        printError(f'  {spaceA}{vA} * {vB}{spaceB} = {x}')
                 else:
                     deleteLine()
     printBar()
@@ -166,17 +212,17 @@ def fractions(shuffle=False):
 
 
 def question():
-    tables = {'1': 'Multiplication Tables', '2': 'Division Tables', '3': 'Percentages',
-              '4': 'Fractions', '5': 'Quit'}
+    tables = {
+        '1': 'Multiplication Tables',
+        '2': 'Double Diget Multiplication',
+        '3': 'Division Tables',
+        '4': 'Percentages',
+        '5': 'Fractions'
+    }
     print('Select Exercise:')
     for k, v in tables.items():
         print(f'  {k}: {v}')
-    x = input('Enter value: ')
-    if x in tables.keys() or x in tables.values():
-        return tables[x]
-    else:
-        deleteLine(4)
-        return question()
+    return tables[input('Enter value: ')]
 
 
 if __name__ == '__main__':
@@ -185,6 +231,8 @@ if __name__ == '__main__':
         exercise = question()
         if exercise == 'Multiplication Tables':
             multiplication(randomize)
+        elif exercise == 'Double Diget Multiplication':
+            multiplicationDoubleDiget()
         elif exercise == 'Division Tables':
             division(randomize)
         elif exercise == 'Percentages':
@@ -193,4 +241,3 @@ if __name__ == '__main__':
             fractions(randomize)
         else:
             break
-
